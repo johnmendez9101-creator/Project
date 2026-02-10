@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>For You ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Cursive but readable font -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Pacifico', cursive;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    #musicBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      background: rgba(255,255,255,0.8);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 60px;
+      height: 80px;
+      background: red;
+      border-radius: 50% 50% 45% 45%;
+      cursor: pointer;
+      animation: floatUp 8s linear infinite;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: #555;
+      transform: translateX(-50%);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>You make my heart float 🎈</h1>
+
+  <button id="musicBtn">🎵</button>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Pop sound -->
+  <audio id="popSound" preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2c58c5b6e4.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const bgMusic = document.getElementById('bgMusic');
+    const popSound = document.getElementById('popSound');
+    const musicBtn = document.getElementById('musicBtn');
+
+    bgMusic.volume = 0.6;
+    popSound.volume = 1.0;
+
+    let musicUnlocked = false;
+
+    function unlockMusic() {
+      if (!musicUnlocked) {
+        bgMusic.play().catch(()=>{});
+        musicBtn.textContent = "🔊";
+        musicUnlocked = true;
+      }
+    }
+
+    document.addEventListener('click', unlockMusic, { once: true });
+    document.addEventListener('touchstart', unlockMusic, { once: true });
+    document.addEventListener('keydown', unlockMusic, { once: true });
+
+    musicBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (bgMusic.paused) {
+        bgMusic.play().catch(()=>{});
+        musicBtn.textContent = "🔊";
+      } else {
+        bgMusic.pause();
+        musicBtn.textContent = "🎵";
+      }
+    });
+
+    function createBalloon() {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+
+      const colors = ['#ff4d6d', '#ffafcc', '#cdb4db', '#a2d2ff', '#ffc8dd'];
+      balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+      balloon.style.left = Math.random() * 90 + 'vw';
+      balloon.style.animationDuration = (6 + Math.random() * 4) + 's';
+
+      balloon.addEventListener('click', () => {
+        popSound.currentTime = 0;
+        popSound.play().catch(()=>{});
+        balloon.remove();
+      });
+
+      document.body.appendChild(balloon);
+
+      setTimeout(() => balloon.remove(), 10000);
+    }
+
+    setInterval(createBalloon, 800);
+  </script>
+
+</body>
+</html>
